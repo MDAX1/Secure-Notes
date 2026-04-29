@@ -1,6 +1,7 @@
 package com.securenotes;
 
 import com.securenotes.model.User;
+import com.securenotes.ui.AdminMenu;
 import com.securenotes.ui.MainMenu;
 import com.securenotes.ui.UserMenu;
 
@@ -8,7 +9,6 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -27,7 +27,13 @@ public class Main {
                     Optional<User> loggedInUser = mainMenu.handleLogin();
 
                     if (loggedInUser.isPresent()) {
-                        new UserMenu(scanner, loggedInUser.get()).run();
+                        User user = loggedInUser.get();
+
+                        if ("ADMIN".equals(user.getRole())) {
+                            new AdminMenu(scanner, user).run();
+                        } else {
+                            new UserMenu(scanner, user).run();
+                        }
                     }
                 }
 

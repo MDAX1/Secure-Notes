@@ -18,4 +18,15 @@ public class NoteService {
     public List<Note> getMyNotes(User user) throws SQLException {
         return noteRepository.findByUserId(user.getId());
     }
+
+    // Hämtar alla notes (admin-funktion)
+    public List<Note> getAllNotes() throws SQLException {
+        return noteRepository.findAll();
+    }
+
+    // Raderar valfri note (admin-funktion)
+    public void deleteAnyNote(int noteId) throws SQLException {
+        noteRepository.deleteById(noteId);
+        System.out.println("Note raderad!");
+    }
 }
