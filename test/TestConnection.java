@@ -1,5 +1,3 @@
-package com.securenotes;
-
 import java.sql.Connection;
 import com.securenotes.database.DatabaseConnection;
 
