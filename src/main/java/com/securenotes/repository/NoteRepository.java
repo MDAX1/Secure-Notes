@@ -113,4 +113,4 @@ public class NoteRepository {
         }
     }
 
-}                                   // <-- klassen stängs här
+}

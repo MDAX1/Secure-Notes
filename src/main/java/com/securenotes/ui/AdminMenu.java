@@ -3,6 +3,7 @@ package com.securenotes.ui;
 import com.securenotes.model.Note;
 import com.securenotes.model.User;
 import com.securenotes.service.NoteService;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;

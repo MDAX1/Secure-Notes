@@ -12,13 +12,13 @@ public class AuthService {
     private final UserRepository userRepository = new UserRepository();
 
     public void register(String username, String password) throws SQLException {
-        // Kolla om användarnamnet redan finns – VG felhantering
+        // Kolla om användarnamnet redan finns
         if (userRepository.usernameExists(username)) {
             throw new IllegalArgumentException(
                     "Username '" + username + "' is already taken. Please choose another."
             );
         }
-
+        // hashar innan reggisteringen
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         userRepository.save(username, hashedPassword);
         System.out.println("Account created successfully! You can log in now.");
