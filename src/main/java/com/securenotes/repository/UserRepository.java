@@ -40,7 +40,24 @@ public class UserRepository {
                 ));
             }
         }
-        // Returnerar tomt om ingen användare hittades
         return Optional.empty();
+    }
+
+    // Kollar om användarnamnet redan finns – används vid registrering
+    public boolean usernameExists(String username) throws SQLException {
+        return findByUsername(username).isPresent();
+    }
+
+    // Uppdaterar lösenordet för en användare – används vid lösenordsbyte
+    public void updatePassword(int userId, String newHashedPassword) throws SQLException {
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newHashedPassword);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        }
     }
 }

@@ -45,6 +45,7 @@ public class NoteRepository {
         }
         return notes;
     }
+
     // Hämtar alla notes från alla användare (för admin)
     public List<Note> findAll() throws SQLException {
         List<Note> notes = new ArrayList<>();
@@ -71,6 +72,22 @@ public class NoteRepository {
         return notes;
     }
 
+    // Uppdaterar en note som tillhör en specifik användare
+    public void update(int noteId, int userId, String newTitle, String newContent)
+            throws SQLException {
+        String sql = "UPDATE notes SET title = ?, content = ? WHERE id = ? AND user_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newTitle);
+            stmt.setString(2, newContent);
+            stmt.setInt(3, noteId);
+            stmt.setInt(4, userId);
+            stmt.executeUpdate();
+        }
+    }                               // <-- update stängs här
+
     // Raderar en note oavsett ägare (för admin)
     public void deleteById(int noteId) throws SQLException {
         String sql = "DELETE FROM notes WHERE id = ?";
@@ -82,4 +99,18 @@ public class NoteRepository {
             stmt.executeUpdate();
         }
     }
-}
+
+    // Raderar en specifik användares note
+    public void deleteByIdAndUser(int noteId, int userId) throws SQLException {
+        String sql = "DELETE FROM notes WHERE id = ? AND user_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, noteId);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        }
+    }
+
+}                                   // <-- klassen stängs här

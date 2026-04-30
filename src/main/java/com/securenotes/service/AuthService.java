@@ -12,23 +12,27 @@ public class AuthService {
     private final UserRepository userRepository = new UserRepository();
 
     public void register(String username, String password) throws SQLException {
-        // Hasha lösenordet innan vi sparar eftersom man ska aldrig spara lösenord i klartext
+        // Kolla om användarnamnet redan finns – VG felhantering
+        if (userRepository.usernameExists(username)) {
+            throw new IllegalArgumentException(
+                    "Username '" + username + "' is already taken. Please choose another."
+            );
+        }
+
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         userRepository.save(username, hashedPassword);
-        System.out.println("Account created successfully! You can Loging now.");
+        System.out.println("Account created successfully! You can log in now.");
     }
 
     public Optional<User> login(String username, String password) throws SQLException {
         Optional<User> found = userRepository.findByUsername(username);
 
-        // Ingen användare med det användarnamnet
         if (found.isEmpty()) {
             return Optional.empty();
         }
 
         User user = found.get();
 
-        // Jämför det angivna lösenordet med det hashade i databasen
         boolean correctPassword = BCrypt.checkpw(password, user.getPassword());
 
         if (correctPassword) {
@@ -36,5 +40,18 @@ public class AuthService {
         }
 
         return Optional.empty();
+    }
+
+    // Ändra lösenord – verifierar gamla lösenordet innan vi tillåter ändring
+    public void changePassword(User user, String oldPassword, String newPassword)
+            throws SQLException {
+
+        if (!BCrypt.checkpw(oldPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Incorrect current password.");
+        }
+
+        String newHashed = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        userRepository.updatePassword(user.getId(), newHashed);
+        System.out.println("Password changed successfully!");
     }
 }

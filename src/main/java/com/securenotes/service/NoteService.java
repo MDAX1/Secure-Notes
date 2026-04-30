@@ -8,25 +8,38 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class NoteService {
+
     private final NoteRepository noteRepository = new NoteRepository();
 
     public void createNote(User user, String title, String content) throws SQLException {
         noteRepository.save(user.getId(), title, content);
-        System.out.println("Note skapad!");
+        System.out.println("Note created!");
     }
 
     public List<Note> getMyNotes(User user) throws SQLException {
         return noteRepository.findByUserId(user.getId());
     }
 
-    // Hämtar alla notes (admin-funktion)
+    public void editNote(User user, int noteId, String newTitle, String newContent)
+            throws SQLException {
+        noteRepository.update(noteId, user.getId(), newTitle, newContent);
+        System.out.println("Note updated!");
+    }
+
+    // Raderar användarens egna note
+    public void deleteMyNote(User user, int noteId) throws SQLException {
+        noteRepository.deleteByIdAndUser(noteId, user.getId());
+        System.out.println("Note deleted!");
+    }
+
+    // Hämtar alla notes (admin funktion)
     public List<Note> getAllNotes() throws SQLException {
         return noteRepository.findAll();
     }
 
-    // Raderar valfri note (admin-funktion)
+    // Raderar valfri note (admin funktion)
     public void deleteAnyNote(int noteId) throws SQLException {
         noteRepository.deleteById(noteId);
-        System.out.println("Note raderad!");
+        System.out.println("Note deleted!");
     }
 }
